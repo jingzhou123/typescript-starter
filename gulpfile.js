@@ -1,16 +1,19 @@
 var gulp        = require('gulp');
 var browserSync = require('browser-sync').create();
+var sourcemaps = require('gulp-sourcemaps');
 var ts = require('gulp-typescript');
 
 // process JS files and return the stream.
 gulp.task('js', function () {
     return gulp.src('src/*.ts')
+    .pipe(sourcemaps.init())
     .pipe(
       ts({
         noImplicitAny: true,
         out: 'build.js'
       })
-    )
+    ).js
+    .pipe(sourcemaps.write())
     .pipe(gulp.dest('dist'));
 });
 
