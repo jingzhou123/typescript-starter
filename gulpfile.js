@@ -2,6 +2,7 @@ var browserSync = require('browser-sync').create();
 var devCompiler;
 var gulp        = require('gulp');
 var gutil = require("gulp-util");
+var runSequence = require('run-sequence');
 var sourcemaps = require('gulp-sourcemaps');
 var ts = require('gulp-typescript');
 var webpack = require('webpack');
@@ -46,13 +47,8 @@ gulp.task('webpack:watch', function(callback) {
   }); 
 });
 
-gulp.task('watch', ['browserSync'], function() {
-  gulp.start('webpack:watch');
-});
-
-// use default task to launch Browsersync and watch JS files
-gulp.task('serve', ['webpack:build-dev'], function () {
-  gulp.start('watch');
+gulp.task('serve', function (done) {
+  runSequence('webpack:build-dev', 'browserSync', 'webpack:watch', done);
 });
 
 gulp.task('default', ['serve']);
