@@ -1,11 +1,15 @@
-var idDone: boolean = true;
-var task: string = 'str';
-var taskArr: string[] = ['task1'];
-enum TaskType {One, Two, Three};
-var tt: TaskType = TaskType.One;
+/// <reference path="../typings/jquery/jquery.d.ts" />
 
-function greet(person: string) {
-  document.write(person);
-}
+import * as $ from 'jquery';
+import { Utils } from './utils';
+import one = require('./other');
+import map = require('./map');
+import massive = require('./massive');
 
-greet('123');
+console.log('massive obj: ', massive);
+map.set('123');
+Utils.log('Hello, world!');
+$(document).on('click', e => {
+    Utils.log('clicked');
+});
+alert(one);

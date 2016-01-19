@@ -1,0 +1,1 @@
+export var other: string;
