@@ -12,7 +12,9 @@
     "browser-sync": "^2.11.0",
     "gulp": "^3.9.0",
     "gulp-sourcemaps": "^1.6.0",
-    "ts-loader": "^0.7.2"
+    "gulp-util": "^3.0.7",
+    "ts-loader": "^0.7.2",
+    "webpack": "^1.12.11"
   },
   "dependencies": {
     "gulp-typescript": "^2.10.0",

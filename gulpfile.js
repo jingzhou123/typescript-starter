@@ -1,40 +1,62 @@
-var gulp        = require('gulp');
 var browserSync = require('browser-sync').create();
+var devCompiler;
+var gulp        = require('gulp');
+var gutil = require("gulp-util");
 var sourcemaps = require('gulp-sourcemaps');
 var ts = require('gulp-typescript');
+var webpack = require('webpack');
+var webpackConfig = require('./webpack.config');
 
-// process JS files and return the stream.
-gulp.task('js', function () {
-    return gulp.src('src/*.ts')
-    .pipe(sourcemaps.init())
-    .pipe(
-      ts({
-        noImplicitAny: true,
-        outDir: 'dist',
-        module: 'umd' 
-      })
-    ).js
-    .pipe(sourcemaps.write())
-    .pipe(gulp.dest('dist'));
+devCompiler = webpack(webpackConfig);
+
+gulp.task('browserSync', function() {
+  browserSync.init({
+    server: {
+      baseDir: "./"
+    }
+  });
+});
+
+gulp.task('webpack:watch', function(callback) {
+  var initialCompile = false;
+
+  webpack(webpackConfig).watch(200, function(err, stats) {
+		if(err) throw new gutil.PluginError("webpack:build-dev", err);
+		gutil.log("[webpack:build-dev]", stats.toString({
+			colors: true
+		}));
+
+    browserSync.reload();
+    // On the initial compile, let gulp know the task is done
+    if(!initialCompile) {
+      initialCompile = true;
+      callback();
+    }
+  }); 
+});
+
+gulp.task("webpack:build-dev", function(callback) {
+	// run webpack
+	devCompiler.run(function(err, stats) {
+		if(err) throw new gutil.PluginError("webpack:build-dev", err);
+		gutil.log("[webpack:build-dev]", stats.toString({
+			colors: true
+		}));
+		callback();
+	});
 });
 
 // create a task that ensures the `js` task is complete before
 // reloading browsers
-gulp.task('js-watch', ['js'], browserSync.reload);
+gulp.task('js-watch', ['webpack:build-dev'], browserSync.reload);
+
+gulp.task('watch', ['browserSync'], function() {
+  gulp.start('webpack:watch');
+});
 
 // use default task to launch Browsersync and watch JS files
-gulp.task('serve', ['js'], function () {
-
-    // Serve files from the root of this project
-    browserSync.init({
-        server: {
-            baseDir: "./"
-        }
-    });
-
-    // add browserSync.reload to the tasks array to make
-    // all browsers reload after tasks are complete.
-    gulp.watch("src/*.*", ['js-watch']);
+gulp.task('serve', ['webpack:build-dev'], function () {
+  gulp.start('watch');
 });
 
 gulp.task('default', ['serve']);
