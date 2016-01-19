@@ -10,7 +10,8 @@ gulp.task('js', function () {
     .pipe(
       ts({
         noImplicitAny: true,
-        out: 'build.js'
+        outDir: 'dist',
+        module: 'umd' 
       })
     ).js
     .pipe(sourcemaps.write())
