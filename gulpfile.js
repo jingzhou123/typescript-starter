@@ -17,6 +17,17 @@ gulp.task('browserSync', function() {
   });
 });
 
+gulp.task("webpack:build-dev", function(callback) {
+	// run webpack
+	devCompiler.run(function(err, stats) {
+		if(err) throw new gutil.PluginError("webpack:build-dev", err);
+		gutil.log("[webpack:build-dev]", stats.toString({
+			colors: true
+		}));
+		callback();
+	});
+});
+
 gulp.task('webpack:watch', function(callback) {
   var initialCompile = false;
 
@@ -34,21 +45,6 @@ gulp.task('webpack:watch', function(callback) {
     }
   }); 
 });
-
-gulp.task("webpack:build-dev", function(callback) {
-	// run webpack
-	devCompiler.run(function(err, stats) {
-		if(err) throw new gutil.PluginError("webpack:build-dev", err);
-		gutil.log("[webpack:build-dev]", stats.toString({
-			colors: true
-		}));
-		callback();
-	});
-});
-
-// create a task that ensures the `js` task is complete before
-// reloading browsers
-gulp.task('js-watch', ['webpack:build-dev'], browserSync.reload);
 
 gulp.task('watch', ['browserSync'], function() {
   gulp.start('webpack:watch');
