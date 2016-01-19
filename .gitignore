@@ -1,3 +1,6 @@
+typings
+dist
+
 # Logs
 logs
 *.log
