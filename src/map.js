@@ -2,7 +2,7 @@ define(function() {
   var map = {};
   return {
     set: function(key) {
-      alert('setting key: ' + key);
+      console.log('setting key: ' + key);
     }
   };   
 });
